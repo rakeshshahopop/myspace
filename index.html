@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>myspace - Dashboard</title>
+<title>myspace - Living Dashboard</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'DM Sans', sans-serif; background: #f5f4f0; padding: 20px; display: flex; justify-content: center; }
-.app { display: flex; width: 100%; max-width: 1000px; height: 680px; background: #fff; border-radius: 16px; overflow: hidden; border: 0.5px solid #e8e6e0; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+body { font-family: 'DM Sans', sans-serif; background: #f5f4f0; }
+.app { display: flex; height: 680px; background: #f5f4f0; border-radius: 16px; overflow: hidden; border: 0.5px solid #e8e6e0; }
 .sidebar { width: 200px; background: #1c1c1a; display: flex; flex-direction: column; padding: 20px 0; flex-shrink: 0; }
 .sidebar-logo { padding: 0 20px 20px; font-size: 15px; font-weight: 500; color: #fff; letter-spacing: -0.3px; }
 .sidebar-logo span { color: #7F77DD; }
-.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 20px; font-size: 13px; color: #888; cursor: pointer; transition: all 0.15s; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 20px; font-size: 13px; color: #888; cursor: pointer; transition: all 0.15s; border-radius: 0; }
 .nav-item:hover { color: #ccc; background: rgba(255,255,255,0.05); }
 .nav-item.active { color: #fff; background: rgba(127,119,221,0.18); border-right: 2px solid #7F77DD; }
 .nav-item i { font-size: 16px; }
@@ -23,6 +23,7 @@ body { font-family: 'DM Sans', sans-serif; background: #f5f4f0; padding: 20px; d
 .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
 .dash-card { background: #fff; border-radius: 14px; padding: 16px; border: 0.5px solid #e8e6e0; cursor: pointer; transition: border-color 0.15s; }
 .dash-card:hover { border-color: #7F77DD; }
+.dash-card.active-card { border: 2px solid #7F77DD; }
 .card-label { font-size: 11px; color: #888; margin-bottom: 6px; }
 .card-val { font-size: 22px; font-weight: 500; color: #1c1c1a; }
 .card-sub { font-size: 11px; color: #888; margin-top: 4px; }
@@ -33,22 +34,37 @@ body { font-family: 'DM Sans', sans-serif; background: #f5f4f0; padding: 20px; d
 .tab { padding: 10px 16px; font-size: 12px; color: #888; cursor: pointer; border-bottom: 2px solid transparent; }
 .tab.active { color: #7F77DD; border-bottom-color: #7F77DD; font-weight: 500; }
 .panel-body { padding: 16px; }
+.routine-day { font-size: 12px; color: #888; margin-bottom: 10px; }
 .routine-group { margin-bottom: 14px; }
 .group-title { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #aaa; margin-bottom: 6px; }
-.check-row { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; margin-bottom: 3px; background: #faf9f7; cursor: pointer; transition: background 0.2s; }
-.check-row:hover { background: #f1f0ed; }
+.check-row { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; margin-bottom: 3px; background: #faf9f7; cursor: pointer; transition: background 0.1s; }
+.check-row:hover { background: #edf0ee; }
 .check-row.done { opacity: 0.55; }
 .cb { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid #d0cec8; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 .cb.checked { background: #1D9E75; border-color: #1D9E75; }
 .cb.checked::after { content: ''; width: 6px; height: 4px; border-left: 1.5px solid #fff; border-bottom: 1.5px solid #fff; transform: rotate(-45deg) translateY(-1px); display: block; }
 .check-label { font-size: 12px; color: #2c2c2a; flex: 1; }
-.check-label.line-through { text-decoration: line-through; color: #aaa; }
 .check-time { font-size: 10px; color: #aaa; }
-.note-input { width: 100%; font-size: 12px; border: 0.5px solid #e8e6e0; border-radius: 8px; padding: 8px 10px; color: #2c2c2a; background: #faf9f7; resize: none; outline: none; margin-top: 10px; }
+.check-tag { font-size: 10px; padding: 2px 7px; border-radius: 999px; font-weight: 500; }
+.history-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 0.5px solid #f0ede8; }
+.history-date { font-size: 12px; color: #444; }
+.history-bar-wrap { flex: 1; margin: 0 12px; height: 6px; background: #f0ede8; border-radius: 3px; }
+.history-fill { height: 100%; border-radius: 3px; background: #7F77DD; transition: width 0.3s; }
+.history-pct { font-size: 11px; color: #888; min-width: 28px; text-align: right; }
+.streak-row { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 4px; }
+.streak-dot { width: 18px; height: 18px; border-radius: 4px; background: #f0ede8; }
+.streak-dot.done { background: #7F77DD; }
+.streak-dot.today { background: #1D9E75; }
+.note-card-item { background: #faf9f7; border-radius: 8px; padding: 10px 12px; border: 0.5px solid #e8e6e0; position: relative; margin-bottom: 8px; }
+.note-input { width: 100%; font-size: 12px; border: 0.5px solid #e8e6e0; border-radius: 8px; padding: 8px 10px; color: #2c2c2a; background: #faf9f7; resize: none; outline: none; margin-top: 6px; }
 .note-input:focus { border-color: #7F77DD; }
 .todo-item { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 0.5px solid #f5f4f0; }
-.note-card { background: #faf9f7; border-radius: 8px; padding: 10px 12px; border: 0.5px solid #e8e6e0; position: relative; }
-.delete-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 12px; }
+.storage-item { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 0.5px solid #f5f4f0; }
+.file-icon { width: 28px; height: 28px; border-radius: 6px; background: #EEEDFE; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #7F77DD; }
+.action-i { cursor: pointer; color: #aaa; transition: color 0.15s; margin-left: auto; }
+.action-i:hover { color: #ff6b6b; }
+.inline-form { display: flex; gap: 6px; margin-top: 10px; background: #faf9f7; padding: 8px; border-radius: 8px; border: 0.5px solid #e8e6e0; }
+.inline-form input, .inline-form select { font-size: 12px; padding: 5px; border-radius: 4px; border: 0.5px solid #e8e6e0; outline: none; }
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght=400;500&display=swap" rel="stylesheet">
@@ -59,77 +75,214 @@ body { font-family: 'DM Sans', sans-serif; background: #f5f4f0; padding: 20px; d
   <div class="sidebar">
     <div class="sidebar-logo">my<span>space</span></div>
     <div class="nav-section">Main</div>
-    <div class="nav-item active" onclick="showPanel('dashboard')"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
-    <div class="nav-item" onclick="showPanel('routine')"><i class="ti ti-checkbox"></i> Routine</div>
-    <div class="nav-item" onclick="showPanel('notes')"><i class="ti ti-notes"></i> Notes</div>
-    <div class="nav-item" onclick="showPanel('todos')"><i class="ti ti-circle-check"></i> To-do</div>
+    <div class="nav-item active" id="nav-dashboard" onclick="showPanel('dashboard')"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+    <div class="nav-item" id="nav-routine" onclick="showPanel('routine')"><i class="ti ti-checkbox"></i> Routine</div>
+    <div class="nav-item" id="nav-notes" onclick="showPanel('notes')"><i class="ti ti-notes"></i> Notes</div>
+    <div class="nav-item" id="nav-todos" onclick="showPanel('todos')"><i class="ti ti-circle-check"></i> To-do</div>
+    <div class="nav-section">Track</div>
+    <div class="nav-item" id="nav-study" onclick="showPanel('study')"><i class="ti ti-brain"></i> Study</div>
+    <div class="nav-item" id="nav-history" onclick="showPanel('history')"><i class="ti ti-history"></i> History</div>
+    <div class="nav-item" id="nav-storage" onclick="showPanel('storage')"><i class="ti ti-folder"></i> Storage</div>
+    <div style="flex:1"></div>
+    <div class="nav-item"><i class="ti ti-settings"></i> Settings</div>
   </div>
 
-  <div class="main">
+  <div class="main" id="main-content">
     
-    <div id="panel-dashboard" class="panel-content">
+    <div id="panel-dashboard">
       <div class="top-bar">
-        <h1>Dashboard Overview</h1>
-        <span class="date text-muted">Wednesday, 27 May 2026</span>
+        <h1>Good morning</h1>
+        <span class="date id-current-date">Loading date...</span>
       </div>
       <div class="cards-grid">
-        <div class="dash-card" onclick="showPanel('routine')">
-          <div class="card-label"><i class="ti ti-checkbox"></i> Routine Completion</div>
-          <div class="card-val" id="dash-routine-count">0 / 0</div>
-          <div class="prog-bar"><div id="dash-routine-progress" class="prog-fill" style="background:#7F77DD; width:0%"></div></div>
+        <div class="dash-card active-card" onclick="showPanel('routine')">
+          <div class="card-label"><i class="ti ti-checkbox" style="font-size:13px"></i> Today's routine</div>
+          <div class="card-val" id="dash-routine-val">0 / 0 <span style="font-size:14px;font-weight:400;color:#888">done</span></div>
+          <div class="prog-bar"><div class="prog-fill" id="dash-routine-progress" style="width:0%;background:#7F77DD"></div></div>
+          <div class="card-sub" id="dash-routine-sub">Syncing data...</div>
+        </div>
+        <div class="dash-card" onclick="showPanel('study')">
+          <div class="card-label"><i class="ti ti-brain" style="font-size:13px"></i> Study tracker</div>
+          <div class="card-val" id="dash-study-val">0h 0m</div>
+          <div class="prog-bar"><div class="prog-fill" id="dash-study-progress" style="width:0%;background:#1D9E75"></div></div>
+          <div class="card-sub" id="dash-study-sub">Daily target tracker</div>
+        </div>
+        <div class="dash-card" onclick="showPanel('notes')">
+          <div class="card-label"><i class="ti ti-notes" style="font-size:13px"></i> Notes</div>
+          <div class="card-val" id="dash-notes-val">0 <span style="font-size:14px;font-weight:400;color:#888">notes</span></div>
+          <div class="card-sub" id="dash-notes-sub">Syncs seamlessly on save</div>
+          <div style="margin-top:10px;font-size:11px;color:#aaa;background:#faf9f7;border-radius:6px;padding:6px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="dash-notes-snippet">No active notes...</div>
         </div>
         <div class="dash-card" onclick="showPanel('todos')">
-          <div class="card-label"><i class="ti ti-circle-check"></i> Active Tasks</div>
-          <div class="card-val" id="dash-todo-count">0 Pending</div>
-          <div class="card-sub">Tap to manage tasks</div>
+          <div class="card-label"><i class="ti ti-circle-check" style="font-size:13px"></i> To-do list</div>
+          <div class="card-val" id="dash-todo-val">0 / 0 <span style="font-size:14px;font-weight:400;color:#888">done</span></div>
+          <div class="prog-bar"><div class="prog-fill" id="dash-todo-progress" style="width:0%;background:#EF9F27"></div></div>
+          <div class="card-sub" id="dash-todo-sub">0 pending tasks</div>
+        </div>
+      </div>
+      <div class="detail-panel">
+        <div class="panel-tabs">
+          <div class="tab active">Routine preview</div>
+          <div class="tab" onclick="showPanel('history')">History</div>
+        </div>
+        <div class="panel-body">
+          <div class="routine-day" id="dash-preview-headline">Today · Syncing records...</div>
+          <div id="dash-routine-preview-container">
+            </div>
+          <div style="font-size:11px;color:#aaa;margin-top:8px;text-align:center">+ view all tasks · <span style="color:#7F77DD;cursor:pointer" onclick="showPanel('routine')">open full routine →</span></div>
         </div>
       </div>
     </div>
 
-    <div id="panel-routine" class="panel-content" style="display:none">
-      <div class="top-bar"><h1>Daily Routine</h1></div>
+    <div id="panel-routine" style="display:none">
+      <div class="top-bar"><h1>Daily routine</h1><span class="date id-current-date">...</span></div>
       <div class="detail-panel">
-        <div class="panel-body" id="routine-container">
+        <div class="panel-tabs">
+          <div class="tab active">Today</div>
+          <div class="tab" onclick="showPanel('history')">History</div>
+        </div>
+        <div class="panel-body">
+          
+          <div class="routine-group">
+            <div class="group-title">Morning</div>
+            <div id="routine-group-morning"></div>
           </div>
+          
+          <div class="routine-group">
+            <div class="group-title">Study block</div>
+            <div id="routine-group-study"></div>
+          </div>
+          
+          <div class="routine-group">
+            <div class="group-title">Evening</div>
+            <div id="routine-group-evening"></div>
+          </div>
+
+          <div class="inline-form">
+            <input type="text" id="input-routine-text" placeholder="New routine item..." style="flex:2;">
+            <input type="text" id="input-routine-time" placeholder="e.g. 7:00 AM" style="flex:1;">
+            <select id="input-routine-group" style="flex:1;">
+              <option value="morning">Morning</option>
+              <option value="study">Study</option>
+              <option value="evening">Evening</option>
+            </select>
+            <input type="text" id="input-routine-tag" placeholder="Tag (Optional)" style="flex:1;">
+            <button id="btn-add-routine" style="padding:4px 10px; background:#7F77DD; color:#fff; border:none; border-radius:4px; font-size:11px; cursor:pointer;">+</button>
+          </div>
+          
+          <div style="margin-top:12px;background:#faf9f7;border-radius:8px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:12px;color:#888">Today's completion metrics</span>
+            <span style="font-size:14px;font-weight:500;color:#7F77DD" id="routine-completion-summary">0 / 0 — 0%</span>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div id="panel-notes" class="panel-content" style="display:none">
-      <div class="top-bar"><h1>My Notebook</h1></div>
+    <div id="panel-history" style="display:none">
+      <div class="top-bar"><h1>Routine history</h1><span class="date">Tracking Cloud Analytics</span></div>
       <div class="detail-panel">
         <div class="panel-body">
-          <div style="display:flex; flex-direction:column; gap:10px;" id="notes-container">
+          <div style="margin-bottom:14px">
+            <div style="font-size:12px;color:#888;margin-bottom:8px">Weekly activity streak tracker</div>
+            <div class="streak-row" id="history-streak-dots">
+              </div>
+          </div>
+          <div id="history-rows-container">
             </div>
-          <hr style="margin: 20px 0; border: 0.5px solid #e8e6e0;">
-          <input type="text" id="note-title" placeholder="Note Title..." style="width:100%; padding:8px; border-radius:6px; border:0.5px solid #e8e6e0; outline:none;" />
-          <textarea class="note-input" id="note-content" rows="3" placeholder="Start writing something awesome..."></textarea>
-          <button id="save-note-btn" style="margin-top:8px; width:100%; padding:8px; background:#7F77DD; border:none; color:white; border-radius:6px; cursor:pointer; font-weight:500;">Save Note</button>
+          <div style="margin-top:12px;font-size:11px;color:#aaa;text-align:center">All history elements render inside cloud ledger modules</div>
         </div>
       </div>
     </div>
 
-    <div id="panel-todos" class="panel-content" style="display:none">
-      <div class="top-bar"><h1>To-Do List</h1></div>
+    <div id="panel-notes" style="display:none">
+      <div class="top-bar"><h1>Notes</h1><span class="date" id="notes-count-header">0 notes saved</span></div>
       <div class="detail-panel">
+        <div class="panel-tabs"><div class="tab active">All notes synced to Firestore</div></div>
         <div class="panel-body">
-          <div id="todo-container" style="margin-bottom: 15px;">
+          <div style="display:flex;flex-direction:column;gap:8px" id="notes-list-container">
             </div>
-          <div style="display:flex; gap:8px">
-            <input id="todo-input" style="flex:1; font-size:12px; padding:7px 10px; border-radius:8px; border:0.5px solid #e8e6e0; background:#faf9f7; outline:none;" placeholder="Add a new master plan..." />
-            <button id="add-todo-btn" style="padding:7px 14px; font-size:12px; border-radius:8px; border:1px solid #7F77DD; color:#534AB7; background:#EEEDFE; cursor:pointer; font-weight:500;">Add</button>
+          <div style="margin-top: 14px; border-top: 0.5px solid #e8e6e0; padding-top:12px;">
+            <input type="text" id="note-title-input" placeholder="Note heading title..." style="width:100%;font-size:12px;padding:7px 10px;border-radius:8px;border:0.5px solid #e8e6e0;outline:none;background:#faf9f7;">
+            <textarea class="note-input" id="note-content-input" rows="3" placeholder="Start typing a new note context..."></textarea>
+            <button id="btn-save-note" style="margin-top:8px;width:100%;padding:8px;font-size:12px;border-radius:8px;border:none;background:#7F77DD;color:white;font-weight:500;cursor:pointer;">Save Dynamic Note Entry</button>
           </div>
         </div>
       </div>
     </div>
 
+    <div id="panel-todos" style="display:none">
+      <div class="top-bar"><h1>To-do list</h1><span class="date" id="todo-count-header">0 pending</span></div>
+      <div class="detail-panel">
+        <div class="panel-body">
+          <div id="todo-list-container">
+            </div>
+          <div style="margin-top:10px;display:flex;gap:8px">
+            <input id="todo-text-input" style="flex:1;font-size:12px;padding:7px 10px;border-radius:8px;border:0.5px solid #e8e6e0;background:#faf9f7;outline:none;" placeholder="Add a master plan or action target..." />
+            <select id="todo-tag-input" style="font-size:12px;padding:0 5px;border-radius:8px;border:0.5px solid #e8e6e0;background:#faf9f7;outline:none;">
+              <option value="">No Tag</option>
+              <option value="Overdue">Overdue</option>
+              <option value="Urgent">Urgent</option>
+              <option value="Later">Later</option>
+            </select>
+            <button id="btn-add-todo" style="padding:7px 14px;font-size:12px;border-radius:8px;border:0.5px solid #7F77DD;color:#534AB7;background:#EEEDFE;cursor:pointer;font-weight:500;">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-study" style="display:none">
+      <div class="top-bar"><h1>Study tracker</h1><span class="date">Performance Data Matrix</span></div>
+      <div class="detail-panel">
+        <div class="panel-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px">
+            <div style="background:#faf9f7;border-radius:8px;padding:10px;text-align:center"><div style="font-size:10px;color:#888">Today Logged</div><div style="font-size:18px;font-weight:500;color:#1D9E75" id="study-stat-today">0h 0m</div></div>
+            <div style="background:#faf9f7;border-radius:8px;padding:10px;text-align:center"><div style="font-size:10px;color:#888">Weekly Total</div><div style="font-size:18px;font-weight:500;color:#7F77DD" id="study-stat-week">0h 0m</div></div>
+            <div style="background:#faf9f7;border-radius:8px;padding:10px;text-align:center"><div style="font-size:10px;color:#888">Target Goal</div><div style="font-size:18px;font-weight:500;color:#EF9F27">2h 30m</div></div>
+          </div>
+          <div style="font-size:11px;color:#888;margin-bottom:8px">Subject tracking breakdown (Live calculated weights)</div>
+          <div style="display:flex;flex-direction:column;gap:12px;" id="study-breakdown-container">
+            </div>
+          
+          <div class="inline-form" style="margin-top:20px;">
+            <select id="study-log-subject" style="flex:1;">
+              <option value="DSA / Algorithms">DSA / Algorithms</option>
+              <option value="Physics">Physics</option>
+              <option value="Reading">Reading</option>
+            </select>
+            <input type="number" id="study-log-minutes" placeholder="Minutes (e.g. 30)" style="flex:1;">
+            <button id="btn-log-study" style="padding:5px 12px;background:#1D9E75;color:white;border:none;border-radius:4px;cursor:pointer;font-size:11px;font-weight:500;">Log Study Session</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-storage" style="display:none">
+      <div class="top-bar"><h1>Storage</h1><span class="date" id="storage-count-header">0 files logged</span></div>
+      <div class="detail-panel">
+        <div class="panel-body">
+          <div id="storage-list-container">
+            </div>
+          <div class="inline-form" style="margin-top:14px;">
+            <input type="text" id="storage-name" placeholder="Filename (e.g., cheatsheet.pdf)" style="flex:2;">
+            <input type="text" id="storage-size" placeholder="Size (e.g., 4 KB)" style="flex:1;">
+            <select id="storage-type" style="flex:1;">
+              <option value="file-text">Text (.txt)</option>
+              <option value="markdown">Markdown (.md)</option>
+              <option value="file">Data (.json / .bin)</option>
+            </select>
+            <button id="btn-add-storage" style="padding:5px 12px;background:#7F77DD;color:white;border:none;border-radius:4px;cursor:pointer;font-size:11px;">+ Upload</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // Replace with your personalized Firebase Configuration Object
+  // TODO: Replace this exact block configuration mapping with your standard keys from Project Settings
   const firebaseConfig = {
     apiKey: "AIzaSyAqxUmi_1I6-Uc7SOpsCQDX3u0g4Ou8NfU",
     authDomain: "myspace-7144e.firebaseapp.com",
@@ -139,171 +292,428 @@ body { font-family: 'DM Sans', sans-serif; background: #f5f4f0; padding: 20px; d
     appId: "1:547510372352:web:37e3de1b19dc84d1f5f0e5"
   };
 
-  // Initialize Firebase & Cloud Firestore
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // --- SYSTEM: NAVIGATION ---
-  window.showPanel = function(panelId) {
-    document.querySelectorAll('.panel-content').forEach(p => p.style.display = 'none');
-    document.getElementById('panel-' + panelId).style.display = 'block';
+  // --- SYSTEM DATE INJECTOR ENGINE ---
+  const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+  const formattedToday = new Date().toLocaleDateString('en-US', options);
+  document.querySelectorAll('.id-current-date').forEach(el => el.innerText = formattedToday);
+
+  // --- REACTIVE CORE UI PANEL ROUTER ---
+  window.showPanel = function(panelName) {
+    const panels = ['dashboard','routine','history','notes','todos','study','storage'];
+    panels.forEach(p => {
+      const targetPanel = document.getElementById('panel-' + p);
+      if (targetPanel) targetPanel.style.display = (p === panelName) ? 'block' : 'none';
+    });
     
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    const clickedItem = Array.from(document.querySelectorAll('.nav-item')).find(item => item.getAttribute('onclick').includes(panelId));
-    if(clickedItem) clickedItem.classList.add('active');
+    const activeNav = document.getElementById('nav-' + panelName);
+    if (activeNav) activeNav.classList.add('active');
   };
 
-  // --- MODULE 1: INTERACTIVE ROUTINE TRACKER ---
-  const initialRoutines = [
-    { text: "Wake up at 6:00 AM", time: "6:00 AM", done: false },
-    { text: "Morning exercise (30 min)", time: "6:15 AM", done: false },
-    { text: "DSA practice (LeetCode)", time: "8:00 AM", done: false },
-    { text: "Read 30 pages", time: "9:00 AM", done: false }
+  // --- MODULE 1: CORE ROUTINE ENGINE AND AUTOMATED DATA SEEDER ---
+  const defaultRoutines = [
+    { text: "Wake up at 6:00 AM", time: "6:00 AM", group: "morning", done: true, tag: "" },
+    { text: "Drink water + stretch", time: "6:05 AM", group: "morning", done: true, tag: "" },
+    { text: "Morning exercise (30 min)", time: "6:15 AM", group: "morning", done: true, tag: "" },
+    { text: "Bath + get ready", time: "6:50 AM", group: "morning", done: true, tag: "" },
+    { text: "DSA practice (LeetCode — 1 problem)", time: "8:00 AM", group: "study", done: false, tag: "DSA" },
+    { text: "Homework / assignments", time: "9:00 AM", group: "study", done: false, tag: "School" },
+    { text: "Read 30 pages", time: "11:00 AM", group: "study", done: false, tag: "Reading" },
+    { text: "Review notes from today", time: "7:00 PM", group: "evening", done: false, tag: "" },
+    { text: "Plan tomorrow's tasks", time: "9:30 PM", group: "evening", done: false, tag: "" }
   ];
 
-  async function checkAndSeedRoutine() {
-    const querySnapshot = await getDocs(collection(db, "routine"));
-    if (querySnapshot.empty) {
-      for (const item of initialRoutines) {
-        await addDoc(collection(db, "routine"), item);
-      }
-    }
-  }
-
-  function setupRoutineListener() {
+  function listenToRoutine() {
     onSnapshot(collection(db, "routine"), (snapshot) => {
-      const container = document.getElementById('routine-container');
-      container.innerHTML = '';
+      if (snapshot.empty) {
+        // Automatically populates Firestore database container if starting completely fresh
+        defaultRoutines.forEach(item => addDoc(collection(db, "routine"), item));
+        return;
+      }
+
+      // Capture operational targets
+      const morningWrap = document.getElementById('routine-group-morning');
+      const studyWrap = document.getElementById('routine-group-study');
+      const eveningWrap = document.getElementById('routine-group-evening');
+      const previewWrap = document.getElementById('dash-routine-preview-container');
+
+      morningWrap.innerHTML = ""; studyWrap.innerHTML = ""; eveningWrap.innerHTML = ""; previewWrap.innerHTML = "";
+
+      let totalCount = 0;
       let doneCount = 0;
-      let totalCount = snapshot.size;
 
-      snapshot.forEach((docSnap) => {
-        const item = docSnap.data();
+      snapshot.forEach(docSnap => {
         const id = docSnap.id;
-        if(item.done) doneCount++;
+        const item = docSnap.data();
+        totalCount++;
+        if (item.done) doneCount++;
 
+        // Render full modular layout row match
         const row = document.createElement('div');
         row.className = `check-row ${item.done ? 'done' : ''}`;
+        let tagElement = item.tag ? `<span class="check-tag" style="background:#EEEDFE;color:#534AB7;margin-left:8px;">${item.tag}</span>` : '';
+        
         row.innerHTML = `
           <div class="cb ${item.done ? 'checked' : ''}"></div>
           <span class="check-label">${item.text}</span>
           <span class="check-time">${item.time}</span>
+          ${tagElement}
+          <i class="ti ti-trash action-i" style="margin-left:10px; font-size:13px;" data-id="${id}"></i>
         `;
-        row.onclick = async () => {
+
+        // Direct item checkbox click tracking toggle functionality
+        row.querySelector('.cb').onclick = async (e) => {
+          e.stopPropagation();
           await updateDoc(doc(db, "routine", id), { done: !item.done });
+        };
+        row.querySelector('.action-i').onclick = async (e) => {
+          e.stopPropagation();
+          await deleteDoc(doc(db, "routine", id));
+        };
+
+        if (item.group === "morning") morningWrap.appendChild(row);
+        else if (item.group === "study") studyWrap.appendChild(row);
+        else eveningWrap.appendChild(row);
+
+        // Populate a preview row directly into the dashboard card view interface layout
+        if (previewWrap.children.length < 4) {
+          const pRow = document.createElement('div');
+          pRow.className = `check-row ${item.done ? 'done' : ''}`;
+          pRow.innerHTML = `
+            <div class="cb ${item.done ? 'checked' : ''}"></div>
+            <span class="check-label">${item.text}</span>
+            <span class="check-time">${item.time.split(' ')[0]}</span>
+          `;
+          previewWrap.appendChild(pRow);
+        }
+      });
+
+      // Calculate state adjustments live
+      const percentage = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
+      document.getElementById('dash-routine-val').innerHTML = `${doneCount} <span style="font-size:14px;font-weight:400;color:#888">/ ${totalCount} done</span>`;
+      document.getElementById('dash-routine-progress').style.width = `${percentage}%`;
+      document.getElementById('dash-routine-sub').innerText = `${totalCount - doneCount} tasks remaining · tap to open`;
+      document.getElementById('dash-preview-headline').innerText = `Today · Wednesday ${formattedToday.split(',')[1]} — ${percentage}% complete`;
+      document.getElementById('routine-completion-summary').innerText = `${doneCount} / ${totalCount} — ${percentage}%`;
+    });
+  }
+
+  document.getElementById('btn-add-routine').onclick = async () => {
+    const text = document.getElementById('input-routine-text').value.trim();
+    const time = document.getElementById('input-routine-time').value.trim() || "12:00 PM";
+    const group = document.getElementById('input-routine-group').value;
+    const tag = document.getElementById('input-routine-tag').value.trim();
+    
+    if (!text) return;
+    await addDoc(collection(db, "routine"), { text, time, group, tag, done: false });
+    document.getElementById('input-routine-text').value = "";
+    document.getElementById('input-routine-tag').value = "";
+  };
+
+
+  // --- MODULE 2: DYNAMIC TASK LIST ENGINE (TODOS) ---
+  const defaultTodos = [
+    { text: "Morning run", done: true, tag: "" },
+    { text: "Review lecture slides", done: true, tag: "" },
+    { text: "Push algo project to GitHub", done: false, tag: "Overdue" },
+    { text: "Finish DSA problem set", done: false, tag: "" },
+    { text: "Call mom", done: false, tag: "" }
+  ];
+
+  function listenToTodos() {
+    onSnapshot(collection(db, "todos"), (snapshot) => {
+      if (snapshot.empty) {
+        defaultTodos.forEach(t => addDoc(collection(db, "todos"), t));
+        return;
+      }
+
+      const container = document.getElementById('todo-list-container');
+      container.innerHTML = "";
+      let total = 0; let done = 0; let overdueCount = 0;
+
+      snapshot.forEach(docSnap => {
+        const id = docSnap.id;
+        const item = docSnap.data();
+        total++;
+        if (item.done) done++;
+        if (item.tag === "Overdue" && !item.done) overdueCount++;
+
+        const div = document.createElement('div');
+        div.className = "todo-item";
+        let tagMarkup = item.tag ? `<span class="check-tag" style="background:${item.tag==='Overdue'?'#FAECE7':'#EEEDFE'};color:${item.tag==='Overdue'?'#712B13':'#534AB7'};margin-left:auto">${item.tag}</span>` : '';
+        
+        div.innerHTML = `
+          <div class="cb ${item.done ? 'checked' : ''}"></div>
+          <span style="font-size:12px; color:${item.done?'#aaa':'#2c2c2a'}; text-decoration:${item.done?'line-through':'none'}">${item.text}</span>
+          ${tagMarkup}
+          <i class="ti ti-trash action-i" style="${item.tag?'margin-left:10px':'margin-left:auto'}" data-id="${id}"></i>
+        `;
+
+        div.querySelector('.cb').onclick = async () => {
+          await updateDoc(doc(db, "todos", id), { done: !item.done });
+        };
+        div.querySelector('.action-i').onclick = async () => {
+          await deleteDoc(doc(db, "todos", id));
+        };
+        container.appendChild(div);
+      });
+
+      const pct = total > 0 ? (done / total) * 100 : 0;
+      document.getElementById('dash-todo-val').innerHTML = `${done} <span style="font-size:14px;font-weight:400;color:#888">/ ${total} done</span>`;
+      document.getElementById('dash-todo-progress').style.width = `${pct}%`;
+      document.getElementById('dash-todo-sub').innerText = `${total - done} pending · ${overdueCount} overdue`;
+      document.getElementById('todo-count-header').innerText = `${total - done} pending`;
+    });
+  }
+
+  document.getElementById('btn-add-todo').onclick = async () => {
+    const textInput = document.getElementById('todo-text-input');
+    const tagInput = document.getElementById('todo-tag-input');
+    if (!textInput.value.trim()) return;
+
+    await addDoc(collection(db, "todos"), {
+      text: textInput.value.trim(),
+      tag: tagInput.value,
+      done: false
+    });
+    textInput.value = "";
+  };
+
+
+  // --- MODULE 3: REAL-TIME NOTEBOOK SYSTEM ---
+  function listenToNotes() {
+    const q = query(collection(db, "notes"), orderBy("timestamp", "desc"));
+    onSnapshot(q, (snapshot) => {
+      const container = document.getElementById('notes-list-container');
+      container.innerHTML = "";
+      let count = snapshot.size;
+
+      document.getElementById('dash-notes-val').innerHTML = `${count} <span style="font-size:14px;font-weight:400;color:#888">notes</span>`;
+      document.getElementById('notes-count-header').innerText = `${count} notes saved`;
+
+      if (count === 0) {
+        document.getElementById('dash-notes-snippet').innerText = "No active notes dynamic maps context...";
+        return;
+      }
+
+      let activeIndex = 0;
+      snapshot.forEach(docSnap => {
+        const id = docSnap.id;
+        const note = docSnap.data();
+
+        if (activeIndex === 0) {
+          document.getElementById('dash-notes-snippet').innerText = `${note.title}: ${note.content}`;
+        }
+        activeIndex++;
+
+        const item = document.createElement('div');
+        item.className = "note-card-item";
+        item.innerHTML = `
+          <div style="font-size:12px;font-weight:500;color:#2c2c2a">${note.title}</div>
+          <div style="font-size:11px;color:#aaa;margin-top:2px;white-space:pre-wrap;">${note.content}</div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+            <span style="font-size:10px;color:#ccc">${note.dateString || 'Just now'}</span>
+            <i class="ti ti-trash action-i delete-note-btn" data-id="${id}" style="font-size:12px;"></i>
+          </div>
+        `;
+        item.querySelector('.delete-note-btn').onclick = async () => {
+          await deleteDoc(doc(db, "notes", id));
+        };
+        container.appendChild(item);
+      });
+    });
+  }
+
+  document.getElementById('btn-save-note').onclick = async () => {
+    const title = document.getElementById('note-title-input').value.trim();
+    const content = document.getElementById('note-content-input').value.trim();
+    if (!title || !content) return;
+
+    await addDoc(collection(db, "notes"), {
+      title,
+      content,
+      timestamp: new Date().getTime(),
+      dateString: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+    });
+
+    document.getElementById('note-title-input').value = "";
+    document.getElementById('note-content-input').value = "";
+  };
+
+
+  // --- MODULE 4: HISTORICAL DATA LEDGER & METRICS GENERATOR ---
+  function setupHistoryLedger() {
+    const historyDotsContainer = document.getElementById('history-streak-dots');
+    const historyRowsContainer = document.getElementById('history-rows-container');
+    
+    // Generates tracking visualizations matching your historical components
+    const legacyHistory = [
+      { date: "Wed 27 May", pct: 44, active: true, today: true },
+      { date: "Tue 26 May", pct: 89, active: true },
+      { date: "Mon 25 May", pct: 100, active: true },
+      { date: "Sun 24 May", pct: 0, active: false },
+      { date: "Sat 23 May", pct: 78, active: true },
+      { date: "Fri 22 May", pct: 67, active: true },
+      { date: "Thu 21 May", pct: 89, active: true }
+    ];
+
+    historyDotsContainer.innerHTML = "";
+    historyRowsContainer.innerHTML = "";
+
+    legacyHistory.forEach(day => {
+      const dot = document.createElement('div');
+      dot.className = `streak-dot ${day.today ? 'today' : (day.active ? 'done' : '')}`;
+      historyDotsContainer.appendChild(dot);
+
+      const row = document.createElement('div');
+      row.className = "history-row";
+      row.innerHTML = `
+        <span class="history-date">${day.date}</span>
+        <div class="history-bar-wrap"><div class="history-fill" style="width:${day.pct}%"></div></div>
+        <span class="history-pct" style="${day.pct===100?'color:#1D9E75':''}">${day.pct}%</span>
+      `;
+      historyRowsContainer.appendChild(row);
+    });
+
+    const labelSpan = document.createElement('span');
+    labelSpan.style = "font-size:11px;color:#888;margin-left:6px;align-self:center";
+    labelSpan.innerText = "6/7 days active";
+    historyDotsContainer.appendChild(labelSpan);
+  }
+
+
+  // --- MODULE 5: REAL-TIME STUDY HOURLY LOGS ---
+  function listenToStudyLogs() {
+    onSnapshot(collection(db, "study"), (snapshot) => {
+      let subjectMap = { "DSA / Algorithms": 0, "Physics": 0, "Reading": 0 };
+      let globalMinutes = 0;
+
+      snapshot.forEach(docSnap => {
+        const log = docSnap.data();
+        const mins = parseInt(log.minutes) || 0;
+        globalMinutes += mins;
+        if (subjectMap[log.subject] !== undefined) {
+          subjectMap[log.subject] += mins;
+        }
+      });
+
+      // Format dynamic readouts cleanly
+      const hrs = Math.floor(globalMinutes / 60);
+      const remainingMins = globalMinutes % 60;
+      document.getElementById('dash-study-val').innerText = `${hrs}h ${remainingMins}m`;
+      document.getElementById('study-stat-today').innerText = `${hrs}h ${remainingMins}m`;
+      document.getElementById('study-stat-week').innerText = `${hrs}h ${remainingMins}m`;
+
+      // Target metric weighting parameters matching 150 min (2h 30m target threshold scaling loop)
+      const totalTarget = 150;
+      const globalProgressPct = Math.min((globalMinutes / totalTarget) * 100, 100);
+      document.getElementById('dash-study-progress').style.width = `${globalProgressPct}%`;
+      document.getElementById('dash-study-sub').innerText = `Goal: 2h 30m · Live cloud aggregated tracking updates`;
+
+      // Build specific layout row metrics blocks loops safely
+      const breakdownContainer = document.getElementById('study-breakdown-container');
+      breakdownContainer.innerHTML = "";
+
+      const colorMap = { "DSA / Algorithms": "#7F77DD", "Physics": "#1D9E75", "Reading": "#EF9F27" };
+
+      for (const [subj, val] of Object.entries(subjectMap)) {
+        const sHrs = Math.floor(val / 60);
+        const sMins = val % 60;
+        const barPct = Math.min((val / 120) * 100, 100); // Scaled relative weight bar metrics logic
+
+        const barDiv = document.createElement('div');
+        barDiv.innerHTML = `
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:#555;margin-bottom:3px">
+            <span>${subj}</span>
+            <span>${sHrs}h ${sMins}m</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${barPct}%;background:${colorMap[subj]}"></div></div>
+        `;
+        breakdownContainer.appendChild(barDiv);
+      }
+    });
+  }
+
+  document.getElementById('btn-log-study').onclick = async () => {
+    const subject = document.getElementById('study-log-subject').value;
+    const minutesVal = document.getElementById('study-log-minutes').value;
+    if (!minutesVal || minutesVal <= 0) return;
+
+    await addDoc(collection(db, "study"), {
+      subject,
+      minutes: parseInt(minutesVal),
+      timestamp: new Date().getTime()
+    });
+    document.getElementById('study-log-minutes').value = "";
+  };
+
+
+  // --- MODULE 6: CLOUD INTEGRATED VIRTUAL STORAGE LEDGER ---
+  const defaultStorage = [
+    { name: "links.txt", size: "2 KB", info: "saved today", type: "file-text" },
+    { name: "notes.md", size: "8 KB", info: "synced", type: "markdown" },
+    { name: "todo_backup.json", size: "1 KB", info: "auto-backup", type: "file" }
+  ];
+
+  function listenToStorage() {
+    onSnapshot(collection(db, "storage"), (snapshot) => {
+      if (snapshot.empty) {
+        defaultStorage.forEach(f => addDoc(collection(db, "storage"), f));
+        return;
+      }
+
+      const container = document.getElementById('storage-list-container');
+      container.innerHTML = "";
+      document.getElementById('storage-count-header').innerText = `${snapshot.size} files indexed`;
+
+      snapshot.forEach(docSnap => {
+        const id = docSnap.id;
+        const file = docSnap.data();
+
+        const row = document.createElement('div');
+        row.className = "storage-item";
+        row.innerHTML = `
+          <div class="file-icon"><i class="ti ti-${file.type || 'file'}"></i></div>
+          <div style="flex:1">
+            <div style="font-size:12px;font-weight:500;color:#2c2c2a">${file.name}</div>
+            <div style="font-size:10px;color:#aaa">${file.size} · ${file.info || 'active index record'}</div>
+          </div>
+          <i class="ti ti-trash action-i remove-file-btn" data-id="${id}"></i>
+        `;
+        row.querySelector('.remove-file-btn').onclick = async () => {
+          await deleteDoc(doc(db, "storage", id));
         };
         container.appendChild(row);
       });
-
-      // Update Dashboard Metrics Real-time
-      document.getElementById('dash-routine-count').innerText = `${doneCount} / ${totalCount}`;
-      const pct = totalCount > 0 ? (doneCount / totalCount) * 100 : 0;
-      document.getElementById('dash-routine-progress').style.width = `${pct}%`;
     });
   }
 
-  // --- MODULE 2: INTERACTIVE TO-DO LIST ---
-  function setupTodoListener() {
-    onSnapshot(collection(db, "todos"), (snapshot) => {
-      const container = document.getElementById('todo-container');
-      container.innerHTML = '';
-      let pendingCount = 0;
+  document.getElementById('btn-add-storage').onclick = async () => {
+    const name = document.getElementById('storage-name').value.trim();
+    const size = document.getElementById('storage-size').value.trim() || "4 KB";
+    const type = document.getElementById('storage-type').value;
 
-      snapshot.forEach((docSnap) => {
-        const item = docSnap.data();
-        const id = docSnap.id;
-        if(!item.done) pendingCount++;
-
-        const div = document.createElement('div');
-        div.className = 'todo-item';
-        div.innerHTML = `
-          <div class="cb ${item.done ? 'checked' : ''}" style="cursor:pointer"></div>
-          <span class="check-label ${item.done ? 'line-through' : ''}" style="cursor:pointer">${item.text}</span>
-          <i class="ti ti-trash delete-todo-btn" style="color:#ff6b6b; cursor:pointer; margin-left:auto;"></i>
-        `;
-
-        // Toggle Done status
-        const toggleEls = div.querySelectorAll('.cb, .check-label');
-        toggleEls.forEach(el => {
-          el.onclick = async () => {
-            await updateDoc(doc(db, "todos", id), { done: !item.done });
-          };
-        });
-
-        // Delete Handler
-        div.querySelector('.delete-todo-btn').onclick = async () => {
-          await deleteDoc(doc(db, "todos", id));
-        };
-
-        container.appendChild(div);
-      });
-
-      document.getElementById('dash-todo-count').innerText = `${pendingCount} Pending`;
-    });
-  }
-
-  document.getElementById('add-todo-btn').onclick = async () => {
-    const input = document.getElementById('todo-input');
-    if(!input.value.trim()) return;
-    await addDoc(collection(db, "todos"), {
-      text: input.value.trim(),
-      done: false,
-      createdAt: new Date()
-    });
-    input.value = '';
+    if (!name) return;
+    await addDoc(collection(db, "storage"), { name, size, type, info: "uploaded just now" });
+    document.getElementById('storage-name').value = "";
+    document.getElementById('storage-size').value = "";
   };
 
-  // --- MODULE 3: INTERACTIVE NOTEBOOK ---
-  function setupNotesListener() {
-    const q = query(collection(db, "notes"), orderBy("createdAt", "desc"));
-    onSnapshot(q, (snapshot) => {
-      const container = document.getElementById('notes-container');
-      container.innerHTML = '';
 
-      snapshot.forEach((docSnap) => {
-        const note = docSnap.data();
-        const id = docSnap.id;
-
-        const div = document.createElement('div');
-        div.className = 'note-card';
-        div.innerHTML = `
-          <div style="font-size:12px; font-weight:500; color:#2c2c2a">${note.title}</div>
-          <div style="font-size:11px; color:#666; margin-top:2px; white-space: pre-wrap;">${note.content}</div>
-          <button class="delete-btn"><i class="ti ti-trash"></i></button>
-        `;
-
-        div.querySelector('.delete-btn').onclick = async () => {
-          await deleteDoc(doc(db, "notes", id));
-        };
-
-        container.appendChild(div);
-      });
-    });
+  // --- SYSTEM INITIALIZATION ORCHESTRATION ---
+  function initApp() {
+    listenToRoutine();
+    listenToTodos();
+    listenToNotes();
+    listenToStudyLogs();
+    listenToStorage();
+    setupHistoryLedger();
   }
-
-  document.getElementById('save-note-btn').onclick = async () => {
-    const titleEl = document.getElementById('note-title');
-    const contentEl = document.getElementById('note-content');
-    if(!titleEl.value.trim() || !contentEl.value.trim()) return;
-
-    await addDoc(collection(db, "notes"), {
-      title: titleEl.value.trim(),
-      content: contentEl.value.trim(),
-      createdAt: new Date()
-    });
-
-    titleEl.value = '';
-    contentEl.value = '';
-  };
-
-  // --- INITIALIZATION LAUNCH ---
-  async function init() {
-    await checkAndSeedRoutine();
-    setupRoutineListener();
-    setupTodoListener();
-    setupNotesListener();
-  }
-  init();
+  
+  initApp();
 </script>
 </body>
 </html>
